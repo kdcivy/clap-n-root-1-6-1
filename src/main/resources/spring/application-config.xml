@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- print profile,property & loaded spring bean information -->
+	<!-- <bean id="SpringContextListener" class="com.ktds.framework.common.boot.SpringContextListener"></bean> -->
+
+	<!-- import the dataSource single profile definition -->
+	<import resource="datasource-single-config.xml" />
+	    
+<!-- ***************[ Start : Transaction Configuration ]*************** -->
+	<!-- Single Transaction manager for a single JDBC DataSource (alternative to JTA) -->
+	<bean id="single-transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="ppasDataSource" />
+		<qualifier value="ppas"></qualifier> <!-- transactionManager qualifier : @Transactional 에 사용 -->
+		<!-- <property name="dataSource" ref="mysqlDataSource" />
+		<qualifier value="mysql"></qualifier> --> <!-- transactionManager qualifier : @Transactional 에 사용 -->
+	</bean>
+	<!-- annotation 방식 : enables scanning for @Transactional annotations-->
+	<!-- Single Transaction Manager -->
+	<tx:annotation-driven transaction-manager="single-transactionManager"/>
+	
+	<!-- AOP 방식 : AOP 방식의 Transaction Control -->
+<!-- ***************[ End : Transaction Configuration ]*************** -->
+
+	<!-- Auto Scanning for Service and Repository beans -->
+	<context:component-scan base-package="com.ktds.framework.sample" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+	</context:component-scan>
+
+<!-- ***************[ Start : myBatis Data Access Configuration ]*************** -->
+	<!-- mybatis 방식 database 접근 -->
+	<import resource="sub-mybatis-profile.xml"/>
+<!-- ***************[ End : myBatis Data Access Configuration ]*************** -->
+
+</beans>

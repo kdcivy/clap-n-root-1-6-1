@@ -1,0 +1,15 @@
+---
+applications:
+- name: n-root-on-cf-jboss
+  memory: 1024M
+  instances: 1
+  disk_quota: 1024M
+  timeout: 180
+  host: n-root-on-cf-dev-jboss
+  path: target/n-root-1.6.0-Release.war
+  buildpack: https://github.com/cloudfoundry-community/jboss-buildpack.git
+  env:
+    SPRING_PROFILES_DEFAULT: cloud
+    JBP_CONFIG_OPEN_JDK_JRE: '{jre: { version: 1.7.0_+ }}'
+    JBP_CONFIG_SPRING_AUTO_RECONFIGURATION: '{enabled: false}'
+    
